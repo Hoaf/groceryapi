@@ -15,6 +15,19 @@ public class ProductEntity {
     private Byte enable;
     private CategoryEntity categoryByCategoryId;
 
+    public ProductEntity() {
+    }
+
+    public ProductEntity(String name, Double price, String image, Integer quantity, String description, Byte enable, CategoryEntity categoryByCategoryId) {
+        this.name = name;
+        this.price = price;
+        this.image = image;
+        this.quantity = quantity;
+        this.description = description;
+        this.enable = enable;
+        this.categoryByCategoryId = categoryByCategoryId;
+    }
+
     @Id
     @Column(name = "id")
     public int getId() {

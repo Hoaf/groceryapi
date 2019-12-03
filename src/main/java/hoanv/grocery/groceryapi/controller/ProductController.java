@@ -1,6 +1,7 @@
 package hoanv.grocery.groceryapi.controller;
 
 import hoanv.grocery.groceryapi.model.ProductEntity;
+import hoanv.grocery.groceryapi.payload.ProductRequest;
 import hoanv.grocery.groceryapi.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,11 +10,10 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -46,6 +46,32 @@ public class ProductController {
         if(result == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+        return ResponseEntity.ok(result);
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PostMapping
+    public ResponseEntity<ProductEntity> create(@Valid @RequestBody ProductRequest productRequest){
+        ProductEntity result = productService.create(productRequest);
+        if(result == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PutMapping
+    public ResponseEntity<?> update(@Valid @RequestBody ProductRequest productRequest){
+        ProductEntity result=null;
+        try{
+            result = productService.update(productRequest);
+            if(result == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("update failed");
+            }
+        }catch (RuntimeException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+
         return ResponseEntity.ok(result);
     }
 }
