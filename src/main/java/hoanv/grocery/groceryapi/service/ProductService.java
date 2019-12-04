@@ -23,37 +23,37 @@ public class ProductService {
     private EntityManager entityManager;
 
     public List<ProductEntity> getAll(){
-        return productRepository.findAll();
+        return productRepository.findAllByEnable(1);
     }
 
     public ProductEntity getById(int id){
-        return productRepository.findById(id);
+        return productRepository.findByIdAndEnable(id,1);
     }
 
     public ProductEntity create(ProductRequest productRequest){
 
-        CategoryEntity categoryEntity = categoryRepository.findById(productRequest.getCategoryId())
+        CategoryEntity categoryEntity = categoryRepository.findByIdAndEnable(productRequest.getCategoryId(),1)
                 .orElseThrow(()-> new RuntimeException("couldn't find categoryId"));
-        Byte enable = Byte.parseByte("1");
 
         ProductEntity productEntity = new ProductEntity(productRequest.getName(),
-                productRequest.getPrice(),productRequest.getImage(),productRequest.getQuantity(),productRequest.getDescription(),enable,categoryEntity);
+                productRequest.getPrice(),productRequest.getImage(),productRequest.getQuantity(),productRequest.getDescription(),1,categoryEntity);
 
         return productRepository.save(productEntity);
     }
 
     public ProductEntity update(ProductRequest productRequest){
 
-        ProductEntity productEntity = productRepository.findById(productRequest.getId());
+        ProductEntity productEntity = productRepository.findByIdAndEnable(productRequest.getId(),1);
         if(productEntity != null){
             productEntity.setName(productRequest.getName());
             productEntity.setPrice(productRequest.getPrice());
             productEntity.setImage(productRequest.getImage());
             productEntity.setQuantity(productRequest.getQuantity());
             productEntity.setDescription(productRequest.getDescription());
-            CategoryEntity categoryEntity = categoryRepository.findById(productRequest.getCategoryId())
+            CategoryEntity categoryEntity = categoryRepository.findByIdAndEnable(productRequest.getCategoryId(),1)
                     .orElseThrow(()-> new RuntimeException("couldn't find categoryId"));
             productEntity.setCategoryByCategoryId(categoryEntity);
+
             return productRepository.save(productEntity);
         }
 

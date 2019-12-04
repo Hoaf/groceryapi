@@ -12,13 +12,13 @@ public class ProductEntity {
     private String image;
     private Integer quantity;
     private String description;
-    private Byte enable;
+    private int enable;
     private CategoryEntity categoryByCategoryId;
 
     public ProductEntity() {
     }
 
-    public ProductEntity(String name, Double price, String image, Integer quantity, String description, Byte enable, CategoryEntity categoryByCategoryId) {
+    public ProductEntity(String name, Double price, String image, Integer quantity, String description, int enable, CategoryEntity categoryByCategoryId) {
         this.name = name;
         this.price = price;
         this.image = image;
@@ -90,11 +90,11 @@ public class ProductEntity {
 
     @Basic
     @Column(name = "enable")
-    public Byte getEnable() {
+    public int getEnable() {
         return enable;
     }
 
-    public void setEnable(Byte enable) {
+    public void setEnable(int enable) {
         this.enable = enable;
     }
 

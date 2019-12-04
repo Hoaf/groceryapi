@@ -31,6 +31,7 @@ public class ProductController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
     }
     )
+    @Secured({"ROLE_ADMIN","ROLE_USER"})
     @GetMapping("/products")
     public ResponseEntity<List<ProductEntity>> getAll(){
         List<ProductEntity> result = productService.getAll();
@@ -40,6 +41,7 @@ public class ProductController {
         return ResponseEntity.ok(result);
     }
 
+    @Secured({"ROLE_ADMIN","ROLE_USER"})
     @GetMapping("/{id}")
     public ResponseEntity<ProductEntity> getById(@PathVariable int id){
         ProductEntity result = productService.getById(id);
@@ -49,17 +51,22 @@ public class ProductController {
         return ResponseEntity.ok(result);
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN","ROLE_USER"})
     @PostMapping
-    public ResponseEntity<ProductEntity> create(@Valid @RequestBody ProductRequest productRequest){
-        ProductEntity result = productService.create(productRequest);
+    public ResponseEntity<?> create(@Valid @RequestBody ProductRequest productRequest){
+        ProductEntity result = null;
+        try{
+            result = productService.create(productRequest);
+        }catch (RuntimeException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("create failed");
+        }
         if(result == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         return ResponseEntity.ok(result);
     }
 
-    @Secured("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN","ROLE_USER"})
     @PutMapping
     public ResponseEntity<?> update(@Valid @RequestBody ProductRequest productRequest){
         ProductEntity result=null;

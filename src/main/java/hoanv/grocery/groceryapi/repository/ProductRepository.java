@@ -3,7 +3,9 @@ package hoanv.grocery.groceryapi.repository;
 import hoanv.grocery.groceryapi.model.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductRepository extends JpaRepository<ProductEntity,Integer> {
-    ProductEntity findById(int id);
+import java.util.List;
 
+public interface ProductRepository extends JpaRepository<ProductEntity,Integer> {
+    ProductEntity findByIdAndEnable(int id,int enable);
+    List<ProductEntity> findAllByEnable(int enable);
 }
