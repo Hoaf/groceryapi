@@ -36,7 +36,7 @@ public class UserContronller {
     JwtTokenProvider tokenProvider;
 
     @Secured("ROLE_ADMIN")
-//    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")15031997
 //    @Secured("IS_AUTHENTICATED_ANONYMOUSLY")
     @GetMapping("/users")
     public ResponseEntity<List<UserEntity>> getAll(){
