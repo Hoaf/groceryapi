@@ -71,17 +71,7 @@
             </exclusions>
         </dependency>
     </dependencies>
-    <servers>
-        <server>
-            <id>azure-auth</id>
-            <configuration>
-                <client>bdbc75ee-ad04-48e3-b54f-00c071270c10</client>
-                <tenant>7967d6b9-7dcb-4913-a1a5-a10bbd8dfd3b</tenant>
-                <key>f566c4d1-b46d-4e41-b835-08e0efa3c2eb</key>
-                <environment>AZURE</environment>
-            </configuration>
-        </server>
-    </servers>
+
     <build>
         <plugins>
             <plugin>
