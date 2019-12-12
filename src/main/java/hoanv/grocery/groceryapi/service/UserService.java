@@ -44,7 +44,7 @@ public class UserService implements UserDetailsService {
             return null;
         }
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-        RoleEntity roleEntity = roleService.findRoleEntityByName("USER")
+        RoleEntity roleEntity = roleService.findRoleEntityByName("ROLE_USER")
                 .orElseThrow(() -> new AppException("User Role not set."));
         userEntity.setRoleByRole(roleEntity);
 
