@@ -36,7 +36,7 @@ public class ProductService {
                 .orElseThrow(()-> new RuntimeException("couldn't find categoryId"));
 
         ProductEntity productEntity = new ProductEntity(productRequest.getName(),
-                productRequest.getPrice(),productRequest.getImage(),productRequest.getQuantity(),productRequest.getDescription(),1,categoryEntity);
+                productRequest.getPrice(),productRequest.getImage(),productRequest.getQuantity(),productRequest.getDescription(),1,productRequest.getWhosaleprice(),categoryEntity);
 
         return productRepository.save(productEntity);
     }
@@ -50,6 +50,7 @@ public class ProductService {
             productEntity.setImage(productRequest.getImage());
             productEntity.setQuantity(productRequest.getQuantity());
             productEntity.setDescription(productRequest.getDescription());
+            productEntity.setWhosalePrice(productRequest.getWhosaleprice());
             CategoryEntity categoryEntity = categoryRepository.findByIdAndEnable(productRequest.getCategoryId(),1)
                     .orElseThrow(()-> new RuntimeException("couldn't find categoryId"));
             productEntity.setCategoryByCategoryId(categoryEntity);

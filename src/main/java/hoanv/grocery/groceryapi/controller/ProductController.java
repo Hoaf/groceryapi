@@ -51,22 +51,23 @@ public class ProductController {
         return ResponseEntity.ok(result);
     }
 
-    @Secured({"ROLE_ADMIN","ROLE_USER"})
+    @Secured("ROLE_USER")
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody ProductRequest productRequest){
         ProductEntity result = null;
         try{
             result = productService.create(productRequest);
+            if(result == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("create failed");
+            }
         }catch (RuntimeException ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("create failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
-        if(result == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+
         return ResponseEntity.ok(result);
     }
 
-    @Secured({"ROLE_ADMIN","ROLE_USER"})
+    @Secured("ROLE_USER")
     @PutMapping
     public ResponseEntity<?> update(@Valid @RequestBody ProductRequest productRequest){
         ProductEntity result=null;

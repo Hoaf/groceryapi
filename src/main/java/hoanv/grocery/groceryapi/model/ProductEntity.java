@@ -13,18 +13,21 @@ public class ProductEntity {
     private Integer quantity;
     private String description;
     private int enable;
+    private Double whosalePrice;
+    private UserEntity username;
     private CategoryEntity categoryByCategoryId;
 
     public ProductEntity() {
     }
 
-    public ProductEntity(String name, Double price, String image, Integer quantity, String description, int enable, CategoryEntity categoryByCategoryId) {
+    public ProductEntity(String name, Double price, String image, Integer quantity, String description, int enable, Double whosalePrice, CategoryEntity categoryByCategoryId) {
         this.name = name;
         this.price = price;
         this.image = image;
         this.quantity = quantity;
         this.description = description;
         this.enable = enable;
+        this.whosalePrice = whosalePrice;
         this.categoryByCategoryId = categoryByCategoryId;
     }
 
@@ -46,6 +49,16 @@ public class ProductEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
+    public UserEntity getUsername() {
+        return username;
+    }
+
+    public void setUsername(UserEntity username) {
+        this.username = username;
     }
 
     @Basic
@@ -98,6 +111,16 @@ public class ProductEntity {
         this.enable = enable;
     }
 
+    @Basic
+    @Column(name = "whosale_price")
+    public Double getWhosalePrice() {
+        return whosalePrice;
+    }
+
+    public void setWhosalePrice(Double whosalePrice) {
+        this.whosalePrice = whosalePrice;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,12 +132,13 @@ public class ProductEntity {
                 Objects.equals(image, that.image) &&
                 Objects.equals(quantity, that.quantity) &&
                 Objects.equals(description, that.description) &&
-                Objects.equals(enable, that.enable);
+                Objects.equals(enable, that.enable) &&
+                Objects.equals(whosalePrice, that.whosalePrice);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, image, quantity, description, enable);
+        return Objects.hash(id, name, price, image, quantity, description, enable, whosalePrice);
     }
 
     @ManyToOne

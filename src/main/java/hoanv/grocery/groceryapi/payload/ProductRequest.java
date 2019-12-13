@@ -16,7 +16,17 @@ public class ProductRequest {
     private Integer quantity;
     @NotBlank(message = ("desc can't be empty"))
     private String description;
+    @Min(value = 1,message = ("whosale price > 0"))
+    private Double whosaleprice;
     private int categoryId;
+
+    public Double getWhosaleprice() {
+        return whosaleprice;
+    }
+
+    public void setWhosaleprice(Double whosaleprice) {
+        this.whosaleprice = whosaleprice;
+    }
 
     public int getId() {
         return id;

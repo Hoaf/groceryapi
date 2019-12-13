@@ -13,16 +13,16 @@ public class UserEntity {
     private Integer age;
     private Boolean sex;
     private String image;
-    private byte enable;
+    private int enable;
     private RoleEntity roleByRole;
+
+    public UserEntity() {
+    }
 
     public UserEntity(String username, String password, String fullname) {
         this.username = username;
         this.password = password;
         this.fullname = fullname;
-    }
-
-    public UserEntity() {
     }
 
     @Id
@@ -97,11 +97,11 @@ public class UserEntity {
 
     @Basic
     @Column(name = "enable")
-    public byte getEnable() {
+    public int getEnable() {
         return enable;
     }
 
-    public void setEnable(byte enable) {
+    public void setEnable(int enable) {
         this.enable = enable;
     }
 
