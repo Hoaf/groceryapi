@@ -5,6 +5,9 @@ import hoanv.grocery.groceryapi.model.ProductEntity;
 import hoanv.grocery.groceryapi.payload.ProductRequest;
 import hoanv.grocery.groceryapi.repository.CategoryRepository;
 import hoanv.grocery.groceryapi.repository.ProductRepository;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,5 +62,33 @@ public class ProductService {
         }
 
         return null;
+    }
+    public void initializedHibernateSearch(){
+        try {
+            FullTextEntityManager fullTextEntityManager =
+                    Search.getFullTextEntityManager(entityManager);
+            fullTextEntityManager.createIndexer().startAndWait();
+        }catch (InterruptedException ex){
+            ex.printStackTrace();
+        }
+    }
+
+    public List<ProductEntity> search(String keyword){
+        initializedHibernateSearch();
+        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
+        QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()
+                .buildQueryBuilder()
+                .forEntity(ProductEntity.class)
+                .get();
+
+        org.apache.lucene.search.Query query = queryBuilder
+                .keyword()
+                .onFields("name", "description")
+                .matching(keyword)
+                .createQuery();
+
+        org.hibernate.search.jpa.FullTextQuery jpaQuery
+                = fullTextEntityManager.createFullTextQuery(query, ProductEntity.class);
+        return jpaQuery.getResultList();
     }
 }

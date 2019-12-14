@@ -82,4 +82,14 @@ public class ProductController {
 
         return ResponseEntity.ok(result);
     }
+
+//    @Secured("ROLE_ADMIN")
+    @GetMapping
+    public ResponseEntity<?> search(@RequestParam("keyword") String keyword){
+        List<ProductEntity> result = productService.search(keyword);
+        if(result == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("empty data");
+        }
+        return ResponseEntity.ok(result);
+    }
 }

@@ -1,16 +1,21 @@
 package hoanv.grocery.groceryapi.model;
 
+import org.hibernate.search.annotations.*;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "product", schema = "testdb", catalog = "")
+@Indexed
 public class ProductEntity {
     private int id;
+    @Field(termVector = TermVector.YES, analyze= Analyze.YES, store= Store.NO)
     private String name;
     private Double price;
     private String image;
     private Integer quantity;
+    @Field(termVector = TermVector.YES, analyze= Analyze.YES, store= Store.NO)
     private String description;
     private int enable;
     private Double whosalePrice;
