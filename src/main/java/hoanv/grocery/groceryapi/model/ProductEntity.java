@@ -1,33 +1,24 @@
 package hoanv.grocery.groceryapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "product", schema = "testdb", catalog = "")
+@Indexed
 public class ProductEntity {
     private int id;
+    @Field(termVector = TermVector.YES, analyze= Analyze.YES, store= Store.NO)
     private String name;
     private Double price;
     private String image;
     private Integer quantity;
+    @Field(termVector = TermVector.YES, analyze= Analyze.YES, store= Store.NO)
     private String description;
     private int enable;
     private Double whosalePrice;
-    private String usernameStr;
     private UserEntity username;
     private CategoryEntity categoryByCategoryId;
-
-    @Column(name="username")
-    public String getUsernameStr() {
-        return usernameStr;
-    }
-
-    public void setUsernameStr(String usernameStr) {
-        this.usernameStr = usernameStr;
-    }
 
     public ProductEntity() {
     }
@@ -64,8 +55,7 @@ public class ProductEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "username", referencedColumnName = "username", nullable = false,insertable = false,updatable = false)
-    @JsonIgnore
+    @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
     public UserEntity getUsername() {
         return username;
     }
