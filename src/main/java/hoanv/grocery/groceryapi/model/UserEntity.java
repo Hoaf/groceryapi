@@ -1,5 +1,7 @@
 package hoanv.grocery.groceryapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +18,7 @@ public class UserEntity {
     private String image;
     private int enable;
     private RoleEntity roleByRole;
-
+    @JsonIgnore
     private List<ProductEntity> productEntityList;
 
     @OneToMany(mappedBy = "username")

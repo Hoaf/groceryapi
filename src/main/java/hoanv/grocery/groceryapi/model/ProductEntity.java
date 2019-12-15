@@ -1,5 +1,7 @@
 package hoanv.grocery.groceryapi.model;
 
+import org.hibernate.search.annotations.*;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -18,6 +20,17 @@ public class ProductEntity {
     private int enable;
     private Double whosalePrice;
     private UserEntity username;
+
+    private String usernameStr;
+    @Column(name = "username")
+    public String getUsernameStr() {
+        return usernameStr;
+    }
+
+    public void setUsernameStr(String usernameStr) {
+        this.usernameStr = usernameStr;
+    }
+
     private CategoryEntity categoryByCategoryId;
 
     public ProductEntity() {
@@ -55,7 +68,7 @@ public class ProductEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
+    @JoinColumn(name = "username", referencedColumnName = "username", nullable = false,insertable = false,updatable = false)
     public UserEntity getUsername() {
         return username;
     }
