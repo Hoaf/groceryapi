@@ -1,11 +1,14 @@
 package hoanv.grocery.groceryapi.service;
 
+import hoanv.grocery.groceryapi.authenticate.IAuthenticationFacade;
+import hoanv.grocery.groceryapi.exception.ResourceNotFoundException;
 import hoanv.grocery.groceryapi.model.CategoryEntity;
 import hoanv.grocery.groceryapi.model.ProductEntity;
 import hoanv.grocery.groceryapi.payload.ProductRequest;
 import hoanv.grocery.groceryapi.repository.CategoryRepository;
 import hoanv.grocery.groceryapi.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -22,42 +25,94 @@ public class ProductService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<ProductEntity> getAll(){
-        return productRepository.findAllByEnable(1);
+    @Autowired
+    private IAuthenticationFacade authenticationFacade;
+
+    public List<ProductEntity> getAll() {
+        String currentRole = null;
+        Authentication authentication = authenticationFacade.getAuthentication();
+        if (authentication != null) {
+            currentRole = authentication.getAuthorities().toString();
+        }else{
+            return null;
+        }
+
+        List<ProductEntity> result = null;
+        if(currentRole.equals("[ROLE_USER]")){
+             result = productRepository.findByUsernameStrAndEnable(authentication.getName(),1).orElseThrow(()->
+                     new ResourceNotFoundException("","product",""));
+        }else if(currentRole.equals("[ROLE_ADMIN]")){
+            result = productRepository.findAllByEnable(1).orElseThrow(()->
+                    new ResourceNotFoundException("","product",""));
+        }
+
+        return result;
     }
 
-    public ProductEntity getById(int id){
-        return productRepository.findByIdAndEnable(id,1);
-    }
-
-    public ProductEntity create(ProductRequest productRequest){
-
-        CategoryEntity categoryEntity = categoryRepository.findByIdAndEnable(productRequest.getCategoryId(),1)
-                .orElseThrow(()-> new RuntimeException("couldn't find categoryId"));
-
-        ProductEntity productEntity = new ProductEntity(productRequest.getName(),
-                productRequest.getPrice(),productRequest.getImage(),productRequest.getQuantity(),productRequest.getDescription(),1,productRequest.getWhosaleprice(),categoryEntity);
-
-        return productRepository.save(productEntity);
-    }
-
-    public ProductEntity update(ProductRequest productRequest){
-
-        ProductEntity productEntity = productRepository.findByIdAndEnable(productRequest.getId(),1);
+    public ProductEntity getById(int id) {
+        String currentRole = null;
+        Authentication authentication = authenticationFacade.getAuthentication();
+        if (authentication != null) {
+            currentRole = authentication.getAuthorities().toString();
+        }
+        ProductEntity productEntity = productRepository.findByIdAndEnable(id, 1);
         if(productEntity != null){
-            productEntity.setName(productRequest.getName());
-            productEntity.setPrice(productRequest.getPrice());
-            productEntity.setImage(productRequest.getImage());
-            productEntity.setQuantity(productRequest.getQuantity());
-            productEntity.setDescription(productRequest.getDescription());
-            productEntity.setWhosalePrice(productRequest.getWhosaleprice());
-            CategoryEntity categoryEntity = categoryRepository.findByIdAndEnable(productRequest.getCategoryId(),1)
-                    .orElseThrow(()-> new RuntimeException("couldn't find categoryId"));
-            productEntity.setCategoryByCategoryId(categoryEntity);
-
-            return productRepository.save(productEntity);
+            if (currentRole.equals("[ROLE_ADMIN]") || authentication.getName().equals(productEntity.getUsernameStr())) {
+                return productEntity;
+            }
         }
 
         return null;
     }
+
+    public ProductEntity create(ProductRequest productRequest) {
+
+        String currentUser = null;
+        Authentication authentication = authenticationFacade.getAuthentication();
+        if (authentication != null) {
+            currentUser = authentication.getName();
+        } else {
+            return null;
+        }
+
+        CategoryEntity categoryEntity = categoryRepository.findByIdAndEnable(productRequest.getCategoryId(), 1)
+                .orElseThrow(() -> new ResourceNotFoundException("","category",productRequest.getCategoryId()));
+
+        ProductEntity productEntity = new ProductEntity(productRequest.getName(),
+                productRequest.getPrice(), productRequest.getImage(), productRequest.getQuantity(), productRequest.getDescription(), 1, productRequest.getWhosaleprice(), categoryEntity);
+        productEntity.setUsernameStr(currentUser);
+
+        return productRepository.save(productEntity);
+    }
+
+    public ProductEntity update(ProductRequest productRequest) {
+
+        String currentRole = null;
+        Authentication authentication = authenticationFacade.getAuthentication();
+        if (authentication != null) {
+            currentRole = authentication.getAuthorities().toString();
+        }else{
+            return null;
+        }
+        ProductEntity productEntity = productRepository.findByIdAndEnable(productRequest.getId(), 1);
+        if (productEntity != null) {
+            if (currentRole.equals("[ROLE_ADMIN]") || authentication.getName().equals(productEntity.getUsernameStr())) {
+
+                productEntity.setName(productRequest.getName());
+                productEntity.setPrice(productRequest.getPrice());
+                productEntity.setImage(productRequest.getImage());
+                productEntity.setQuantity(productRequest.getQuantity());
+                productEntity.setDescription(productRequest.getDescription());
+                productEntity.setWhosalePrice(productRequest.getWhosaleprice());
+                CategoryEntity categoryEntity = categoryRepository.findByIdAndEnable(productRequest.getCategoryId(), 1)
+                        .orElseThrow(() -> new ResourceNotFoundException("","category",productRequest.getCategoryId()));
+                productEntity.setCategoryByCategoryId(categoryEntity);
+
+                return productRepository.save(productEntity);
+            }
+        }
+
+        return null;
+    }
+
 }

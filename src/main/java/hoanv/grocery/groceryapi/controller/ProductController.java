@@ -33,20 +33,26 @@ public class ProductController {
     )
     @Secured({"ROLE_ADMIN","ROLE_USER"})
     @GetMapping("/products")
-    public ResponseEntity<List<ProductEntity>> getAll(){
-        List<ProductEntity> result = productService.getAll();
-        if(result == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    public ResponseEntity<?> getAll(){
+        List<ProductEntity> result=null;
+        try{
+            result = productService.getAll();
+            if(result == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("product doesn't exist in your inventory");
+            }
+        }catch (RuntimeException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
+
         return ResponseEntity.ok(result);
     }
 
     @Secured({"ROLE_ADMIN","ROLE_USER"})
     @GetMapping("/{id}")
-    public ResponseEntity<ProductEntity> getById(@PathVariable int id){
+    public ResponseEntity<?> getById(@PathVariable int id){
         ProductEntity result = productService.getById(id);
         if(result == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("product doesn't exist in your inventory");
         }
         return ResponseEntity.ok(result);
     }
@@ -67,7 +73,7 @@ public class ProductController {
         return ResponseEntity.ok(result);
     }
 
-    @Secured("ROLE_USER")
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @PutMapping
     public ResponseEntity<?> update(@Valid @RequestBody ProductRequest productRequest){
         ProductEntity result=null;

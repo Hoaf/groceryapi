@@ -8,7 +8,7 @@ import java.util.Objects;
 public class CategoryEntity {
     private int id;
     private String name;
-    private Byte enable;
+    private int enable;
 
     @Id
     @Column(name = "id")
@@ -32,11 +32,11 @@ public class CategoryEntity {
 
     @Basic
     @Column(name = "enable")
-    public Byte getEnable() {
+    public int getEnable() {
         return enable;
     }
 
-    public void setEnable(Byte enable) {
+    public void setEnable(int enable) {
         this.enable = enable;
     }
 

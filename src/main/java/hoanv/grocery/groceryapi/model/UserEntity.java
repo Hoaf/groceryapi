@@ -1,6 +1,7 @@
 package hoanv.grocery.groceryapi.model;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +16,17 @@ public class UserEntity {
     private String image;
     private int enable;
     private RoleEntity roleByRole;
+
+    private List<ProductEntity> productEntityList;
+
+    @OneToMany(mappedBy = "username")
+    public List<ProductEntity> getProductEntityList() {
+        return productEntityList;
+    }
+
+    public void setProductEntityList(List<ProductEntity> productEntityList) {
+        this.productEntityList = productEntityList;
+    }
 
     public UserEntity() {
     }

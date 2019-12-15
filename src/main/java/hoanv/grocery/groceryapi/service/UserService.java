@@ -31,7 +31,7 @@ public class UserService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsername(s)
+        UserEntity user = userRepository.findByUsernameAndEnable(s,1)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with username : " + s)
                 );
@@ -44,6 +44,7 @@ public class UserService implements UserDetailsService {
             return null;
         }
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+        userEntity.setEnable(1);
         RoleEntity roleEntity = roleService.findRoleEntityByName("ROLE_USER")
                 .orElseThrow(() -> new AppException("User Role not set."));
         userEntity.setRoleByRole(roleEntity);
