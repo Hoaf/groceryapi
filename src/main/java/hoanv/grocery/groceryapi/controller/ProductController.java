@@ -89,6 +89,20 @@ public class ProductController {
 
         return ResponseEntity.ok(result);
     }
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestParam(name="id") int id ){
+        ProductEntity result=null;
+        try{
+             if(productService.delete(id)){
+                 return ResponseEntity.ok("product :"+id+" deleted");
+             }else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("deleted failed");
+            }
+        }catch (RuntimeException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
 
 //    @Secured("ROLE_ADMIN")
     @GetMapping

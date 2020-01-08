@@ -88,6 +88,27 @@ public class ProductService {
         return productRepository.save(productEntity);
     }
 
+    public boolean delete(int id){
+        String currentRole = null;
+        Authentication authentication = authenticationFacade.getAuthentication();
+        if (authentication != null) {
+            currentRole = authentication.getAuthorities().toString();
+        }else{
+            return false;
+        }
+        ProductEntity productEntity = productRepository.findByIdAndEnable(id, 1);
+        if (productEntity != null) {
+            if (currentRole.equals("[ROLE_ADMIN]") || authentication.getName().equals(productEntity.getUsernameStr())) {
+                productEntity.setEnable(0);
+                productRepository.save(productEntity);
+                
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public ProductEntity update(ProductRequest productRequest) {
 
         String currentRole = null;
