@@ -82,7 +82,7 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("","category",productRequest.getCategoryId()));
 
         ProductEntity productEntity = new ProductEntity(productRequest.getName(),
-                productRequest.getPrice(), productRequest.getImage(), productRequest.getQuantity(), productRequest.getDescription(), 1, productRequest.getWhosaleprice(), categoryEntity);
+                productRequest.getPrice(), productRequest.getImage(), productRequest.getQuantity(), productRequest.getDescription(), 1, productRequest.getWhosalePrice(), categoryEntity);
         productEntity.setUsernameStr(currentUser);
 
         return productRepository.save(productEntity);
@@ -106,7 +106,7 @@ public class ProductService {
                 productEntity.setImage(productRequest.getImage());
                 productEntity.setQuantity(productRequest.getQuantity());
                 productEntity.setDescription(productRequest.getDescription());
-                productEntity.setWhosalePrice(productRequest.getWhosaleprice());
+                productEntity.setWhosalePrice(productRequest.getWhosalePrice());
                 CategoryEntity categoryEntity = categoryRepository.findByIdAndEnable(productRequest.getCategoryId(), 1)
                         .orElseThrow(() -> new ResourceNotFoundException("","category",productRequest.getCategoryId()));
                 productEntity.setCategoryByCategoryId(categoryEntity);

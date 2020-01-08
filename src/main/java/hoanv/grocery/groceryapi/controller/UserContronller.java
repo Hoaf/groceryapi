@@ -1,5 +1,6 @@
 package hoanv.grocery.groceryapi.controller;
 
+import hoanv.grocery.groceryapi.authenticate.IAuthenticationFacade;
 import hoanv.grocery.groceryapi.model.UserEntity;
 import hoanv.grocery.groceryapi.payload.ApiResponse;
 import hoanv.grocery.groceryapi.payload.JwtAuthenticationResponse;
@@ -15,14 +16,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins= {"http://localhost:3000"})
 @RequestMapping("/api/user")
 public class UserContronller {
     @Autowired
@@ -33,6 +38,8 @@ public class UserContronller {
 
     @Autowired
     JwtTokenProvider tokenProvider;
+    @Autowired
+    private IAuthenticationFacade authenticationFacade;
 
     @Secured("ROLE_ADMIN")
 //    @PreAuthorize("hasRole('ADMIN')")15031997
@@ -79,4 +86,14 @@ public class UserContronller {
 
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
     }
+
+//    @Secured({"ROLE_ADMIN","ROLE_USER"})
+//    @PostMapping("/logout")
+//    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
+//        Authentication auth = authenticationFacade.getAuthentication();
+//        if (auth != null) {
+//            new SecurityContextLogoutHandler().logout(request,response,auth);
+//        }
+//        return ResponseEntity.ok(auth.getAuthorities());
+//    }
 }
