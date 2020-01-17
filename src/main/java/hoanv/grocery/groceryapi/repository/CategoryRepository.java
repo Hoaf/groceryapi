@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<CategoryEntity,Integer> {
     Optional<CategoryEntity> findByIdAndEnable(int id, int enable);
+    Optional<CategoryEntity> findAllByEnable(int enable);
 }
