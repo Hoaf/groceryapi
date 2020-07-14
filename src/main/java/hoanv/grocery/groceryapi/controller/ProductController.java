@@ -14,6 +14,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -111,6 +113,15 @@ public class ProductController {
         if(result == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("empty data");
         }
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/testupload")
+    public ResponseEntity<?> uploadImage(InputStream file){
+        List<ProductEntity> result = new ArrayList<>();
+//        if(result == null){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("empty data");
+//        }
         return ResponseEntity.ok(result);
     }
 }
